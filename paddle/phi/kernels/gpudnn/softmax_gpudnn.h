@@ -772,7 +772,6 @@ void SwitchWarpSoftmaxForward(const IndexType blocks,
     SOFTMAX_WARP_FORWARD_CASE(7, AccT);
     SOFTMAX_WARP_FORWARD_CASE(8, AccT);
     SOFTMAX_WARP_FORWARD_CASE(9, AccT);
-    SOFTMAX_WARP_FORWARD_CASE(10, AccT);
     default:
       PADDLE_THROW(phi::errors::Unimplemented(
           "Unsupported softmax dim: element_count=%d, log2_element_count=%d!",
@@ -815,7 +814,6 @@ void SwitchWarpSoftmaxBackward(const int blocks,
     SOFTMAX_WARP_BACKWARD_CASE(7, AccT);
     SOFTMAX_WARP_BACKWARD_CASE(8, AccT);
     SOFTMAX_WARP_BACKWARD_CASE(9, AccT);
-    SOFTMAX_WARP_BACKWARD_CASE(10, AccT);
     default:
       // PADDLE_THROW(phi::errors::Unimplemented(
       //     "Unsupported softmax dim: element_count=%d,
@@ -1228,7 +1226,7 @@ bool UseCudnnSoftmax(const GPUContext& ctx,
 #endif
     }
   }
-  constexpr int max_dim = 1024;
+  constexpr int max_dim = 512;
   if (!cudnn_available || !last_dim ||
       (softmax_dim <= max_dim && sizeof(T) <= 4)) {
     return false;
