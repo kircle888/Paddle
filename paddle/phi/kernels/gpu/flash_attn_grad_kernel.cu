@@ -197,8 +197,10 @@ void FlashAttnUnpaddedGradBaseKernel(
                            dropout,
                            scale,
                            causal,
+                           0,  // attn_mask_start_row
                            q.dtype(),
                            attn_mask,
+                           nullptr,  // attn_mask_start_row_indices
                            seed_offset.data<int64_t>());
 
   VLOG(10) << "FlashAttn bwd seed: " << params.seed
@@ -640,6 +642,15 @@ void FlashAttnGradKernel(const Context& ctx,
                          DenseTensor* dq,
                          DenseTensor* dk,
                          DenseTensor* dv) {
+  if (dq) {
+    ctx.template Alloc<T>(dq);
+  }
+  if (dk) {
+    ctx.template Alloc<T>(dk);
+  }
+  if (dv) {
+    ctx.template Alloc<T>(dv);
+  }
   FlashAttnGradBaseKernel<T, Context>(ctx,
                                       q,
                                       k,
@@ -727,6 +738,15 @@ void FlashAttnWithSparseGradKernel(
     DenseTensor* dq,
     DenseTensor* dk,
     DenseTensor* dv) {
+  if (dq) {
+    ctx.template Alloc<T>(dq);
+  }
+  if (dk) {
+    ctx.template Alloc<T>(dk);
+  }
+  if (dv) {
+    ctx.template Alloc<T>(dv);
+  }
   FlashAttnGradBaseKernel<T, Context>(ctx,
                                       q,
                                       k,
